@@ -8,9 +8,7 @@ void IRsensor::Init(void)
 
 float IRsensor::PrintData(void)
 {
-    // Serial.println(ReadData());
-    Serial.print(ReadData());
-    Serial.print("\t");
+    Serial.println(ReadData());
 }
 
 float IRsensor::ReadData(void)

@@ -33,7 +33,7 @@ void loop() {
         ir_sensor.Init();
         sonar_sensor.Init();
         count = 0;
-        Serial.print("\n\n\n\n\n");
+        Serial.print("\n");
       }
       break;
 
@@ -47,9 +47,8 @@ void loop() {
       //PIcontroller.Start(50+speed,50-speed); //speed in [[mm/s]]
       if (count < 10) {
         count++;
-        ir_sensor.PrintData();
+        // ir_sensor.PrintData();
         sonar_sensor.PrintData();
-        Serial.print("\n");
       } else {
         robot_state = ROBOT_IDLE;
       }
