@@ -15,5 +15,6 @@ float IRsensor::ReadData(void)
 {
   //assignment 1.1
   //read out and calibrate your IR sensor, to convert readouts to distance in [cm]
-  return 0;
+
+  return analogRead(pin_IR);
 }

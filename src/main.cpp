@@ -14,17 +14,25 @@ ROBOT_STATE robot_state = ROBOT_IDLE;
 Romi32U4ButtonA buttonA; 
 SpeedController PIcontroller;
 WallFollowingController PDcontroller;
+IRsensor ir_sensor;
+SonarSensor sonar_sensor;
 
 void setup() {
   PIcontroller.Init();
   PDcontroller.Init();
 }
 
+int count = 0;
+
 void loop() {
   switch(robot_state)
   {
     case ROBOT_IDLE:
-      if(buttonA.getSingleDebouncedRelease()) robot_state = ROBOT_DRIVING;
+      if(buttonA.getSingleDebouncedRelease()) {
+        robot_state = ROBOT_DRIVING;
+        ir_sensor.Init();
+        sonar_sensor.Init();
+      }
       break;
 
     case ROBOT_DRIVING:
@@ -35,7 +43,13 @@ void loop() {
       //is capable of following a wall autonomously.
       //int speed = PDcontroller.Start(30); //distance in [cm]
       //PIcontroller.Start(50+speed,50-speed); //speed in [[mm/s]]
-
+      if (count < 10) {
+        count++;
+        Serial.print(ir_sensor.PrintData());
+        Serial.print("\t");
+        Serial.print(sonar_sensor.PrintData());
+        Serial.print("\n");
+      }
       if(buttonA.getSingleDebouncedRelease()) 
       {
         PIcontroller.Stop();
