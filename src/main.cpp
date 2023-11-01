@@ -32,6 +32,8 @@ void loop() {
         robot_state = ROBOT_DRIVING;
         ir_sensor.Init();
         sonar_sensor.Init();
+        count = 0;
+        Serial.print("\n\n\n\n\n");
       }
       break;
 
@@ -45,10 +47,11 @@ void loop() {
       //PIcontroller.Start(50+speed,50-speed); //speed in [[mm/s]]
       if (count < 10) {
         count++;
-        Serial.print(ir_sensor.PrintData());
-        Serial.print("\t");
-        Serial.print(sonar_sensor.PrintData());
+        ir_sensor.PrintData();
+        sonar_sensor.PrintData();
         Serial.print("\n");
+      } else {
+        robot_state = ROBOT_IDLE;
       }
       if(buttonA.getSingleDebouncedRelease()) 
       {
