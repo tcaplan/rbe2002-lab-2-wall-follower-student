@@ -1,11 +1,15 @@
 #include <Romi32U4.h>
 #include "Sonar_sensor.h"
+#include <math.h>
 
 unsigned long volatile triggerStartTime = 0;
 unsigned long startTime = -1;
 unsigned long volatile endTime = -1;
 
 unsigned long volatile readingStartTime = 0;
+
+const unsigned int speed_of_sound = 340; // m/s
+const unsigned int micros_to_sec = pow(10, 9);
 
 static void echoHighISR(void);
 
@@ -43,7 +47,15 @@ float SonarSensor::ReadData(void)
     }
 
     // return the time difference
-    return endTime - startTime;
+    unsigned long time_diff = endTime - startTime;
+    float range = time_diff / speed_of_sound / micros_to_sec / 2.0;
+    float cm = range / 58.0;
+
+    // Calibration equation: read_cm = -0.0008(distance) + 730.14
+    float distance = (cm - 730.14) / -0.008;
+
+    return distance;
+
 }
 
 /**

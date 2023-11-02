@@ -45,13 +45,15 @@ void loop() {
       //is capable of following a wall autonomously.
       //int speed = PDcontroller.Start(30); //distance in [cm]
       //PIcontroller.Start(50+speed,50-speed); //speed in [[mm/s]]
-      if (count < 10) {
-        count++;
-        // ir_sensor.PrintData();
-        sonar_sensor.PrintData();
-      } else {
-        robot_state = ROBOT_IDLE;
-      }
+      // if (count < 10) {
+        // count++;
+        Serial.print(ir_sensor.ReadData());
+        Serial.print("\t");
+        Serial.println(sonar_sensor.ReadData());
+        // sonar_sensor.PrintData();
+      // } else {
+      //   robot_state = ROBOT_IDLE;
+      // }
       if(buttonA.getSingleDebouncedRelease()) 
       {
         PIcontroller.Stop();
