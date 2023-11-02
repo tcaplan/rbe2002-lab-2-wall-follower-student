@@ -21,18 +21,10 @@ float IRsensor::ReadData(void)
   float v_ref = 5.0; // V
   int bits = pow(2, 10) - 1;
 
-  // Calibration equation format: y = a*x + b
-  // Calibration equation: adc = 2941.5(1/distance) + 132.35
-  float a = 2941.5;
-  float b = 132.35;
+  // Calibration equation format: adc = a*(1/distance) + b
+  float a = 4583.5;
+  float b = 38.959;
   float cm = 1 / ((adc - b) / a);
-  // Serial.print(adc);
-  // Serial.print("\t");
-  // Calibration equation: voltage = 18.772(1/distance) + 0.3523
-  // float voltage = adc * v_ref / bits;
-  // a = 18.772;
-  // b = 0.3523;
-  // cm = 1 / ((voltage - b) / a);
 
   return cm;
   
