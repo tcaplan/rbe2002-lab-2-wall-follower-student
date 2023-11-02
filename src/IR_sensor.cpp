@@ -22,8 +22,8 @@ float IRsensor::ReadData(void)
   int bits = pow(2, 10) - 1;
 
   // Calibration equation format: adc = a*(1/distance) + b
-  float a = 4583.5;
-  float b = 38.959;
+  float a = 4631.1;
+  float b = 37.177;
   float cm = 1 / ((adc - b) / a);
 
   return cm;
