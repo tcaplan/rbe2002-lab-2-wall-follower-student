@@ -46,7 +46,7 @@ void loop() {
       //int speed = PDcontroller.Start(30); //distance in [cm]
       //PIcontroller.Start(50+speed,50-speed); //speed in [[mm/s]]
       if (count < 10) {
-        count++;
+        // count++;
         // ir_sensor.PrintData();
         sonar_sensor.PrintData();
       } else {
