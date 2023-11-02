@@ -9,7 +9,7 @@ unsigned long volatile endTime = -1;
 unsigned long volatile readingStartTime = 0;
 
 const unsigned int speed_of_sound = 340; // m/s
-const unsigned int micros_to_sec = pow(10, 9);
+const float micros_in_sec = pow(10, 9);
 
 static void echoHighISR(void);
 
@@ -49,13 +49,18 @@ float SonarSensor::ReadData(void)
 
     // return the time difference
     unsigned long time_diff = endTime - startTime;
-    float range = time_diff / speed_of_sound / micros_to_sec / 2.0;
+    float range = time_diff / speed_of_sound / micros_in_sec / 2.0;
     float cm = range / 58.0;
 
+    Serial.print(time_diff);
+    Serial.print("\t");
+    Serial.print(cm);
+    Serial.print("\t");
+
     // Calibration equation format: y = a*x + b
-    // Calibration equation: read_cm = -9E-5(distance) + 730.14
-    double a = -1.0 * pow(10, -5);
-    float b = 730.14;
+    // Calibration equation: read_cm = -0.0857(distance) + 727.8
+    float a = -0.0857;
+    float b = 27.8;
     float distance = (cm - b) / a;  
 
     return distance;
