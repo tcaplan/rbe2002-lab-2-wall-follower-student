@@ -31,8 +31,9 @@ float SonarSensor::ReadData(void)
     // Send the TRIG pulse for 10 microseconds
     if(millis() - readingStartTime > 60) {
 
+        noInterrupts();
         // set the time for the start of the measurement window
-        startTime = millis();
+        readingStartTime = millis();
 
         // send the pulse
         analogWrite(pin_TRIG, LOW);
@@ -40,6 +41,8 @@ float SonarSensor::ReadData(void)
         analogWrite(pin_TRIG, HIGH);
         delayMicroseconds(10);
         analogWrite(pin_TRIG, LOW);
+        startTime = micros();
+        interrupts();
     }
 
     // return the time difference
