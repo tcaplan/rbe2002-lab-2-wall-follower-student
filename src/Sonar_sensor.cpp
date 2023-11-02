@@ -2,24 +2,18 @@
 #include "Sonar_sensor.h"
 #include <math.h>
 
-unsigned long volatile triggerStartTime = 0;
-unsigned long startTime = -1;
-unsigned long volatile endTime = -1;
-
-unsigned long volatile readingStartTime = 0;
+unsigned long readingStartTime = 0;
+unsigned long duration = 0;
 
 const unsigned int speed_of_sound = 340; // m/s
-const float micros_in_sec = pow(10, 9);
+const float micros_in_sec = pow(10, 6);
+const float cm_in_m = pow(10, 2);
 
-static void echoHighISR(void);
 
 void SonarSensor::Init(void)
 {
     pinMode(pin_TRIG,OUTPUT);
     pinMode(pin_ECHO, INPUT);   
-
-    // set the ISR to trigger when the echo pin has a rising edge
-    attachInterrupt(pin_ECHO, echoHighISR, RISING);
 }
 
 float SonarSensor::PrintData(void)
@@ -33,46 +27,33 @@ float SonarSensor::ReadData(void)
     //read out and calibrate your sonar sensor, to convert readouts to distance in [cm]
 
     // Send the TRIG pulse for 10 microseconds
-    if(millis() - readingStartTime > 60) {
+    if(millis() - readingStartTime > 6) {
 
         // set the time for the start of the measurement window
         readingStartTime = millis();
 
         // send the pulse
-        analogWrite(pin_TRIG, LOW);
+        digitalWrite(pin_TRIG, LOW);
         delayMicroseconds(2);
-        analogWrite(pin_TRIG, HIGH);
+        digitalWrite(pin_TRIG, HIGH);
         delayMicroseconds(10);
-        analogWrite(pin_TRIG, LOW);
-        startTime = micros();
+        digitalWrite(pin_TRIG, LOW);
+        unsigned long temp_duration = pulseIn(pin_ECHO, HIGH);
+        if(temp_duration > 0) {
+            duration = temp_duration; // us
+        }
     }
 
     // return the time difference
-    unsigned long time_diff = endTime - startTime;
-    float range = time_diff / speed_of_sound / micros_in_sec / 2.0;
-    float cm = range / 58.0;
-
-    Serial.print(time_diff);
-    Serial.print("\t");
-    Serial.print(cm);
-    Serial.print("\t");
-
+    float range = duration / micros_in_sec * speed_of_sound * cm_in_m / 2.0;
     // Calibration equation format: y = a*x + b
-    // Calibration equation: read_cm = -0.0857(distance) + 727.8
-    float a = -0.0857;
-    float b = 27.8;
-    float distance = (cm - b) / a;  
+    // Calibration equation: read_cm = a(distance) + b
+    float a = 0.9206;
+    float b = 1.3252;
+    float distance = (range - b) / a;  
 
     return distance;
 
-}
-
-/**
- * @brief ISR that sets the time the echo signal is received
- * 
- */
-static void echoHighISR() {
-    endTime = micros();
 }
 
 
