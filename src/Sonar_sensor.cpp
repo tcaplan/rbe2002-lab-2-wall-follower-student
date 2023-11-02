@@ -36,7 +36,7 @@ float SonarSensor::ReadData(void)
     if(millis() - readingStartTime > 60) {
 
         // set the time for the start of the measurement window
-        startTime = millis();
+        readingStartTime = millis();
 
         // send the pulse
         analogWrite(pin_TRIG, LOW);
@@ -44,6 +44,7 @@ float SonarSensor::ReadData(void)
         analogWrite(pin_TRIG, HIGH);
         delayMicroseconds(10);
         analogWrite(pin_TRIG, LOW);
+        startTime = micros();
     }
 
     // return the time difference
@@ -51,8 +52,11 @@ float SonarSensor::ReadData(void)
     float range = time_diff / speed_of_sound / micros_to_sec / 2.0;
     float cm = range / 58.0;
 
-    // Calibration equation: read_cm = -0.0008(distance) + 730.14
-    float distance = (cm - 730.14) / -0.008;
+    // Calibration equation format: y = a*x + b
+    // Calibration equation: read_cm = -9E-5(distance) + 730.14
+    double a = -1.0 * pow(10, -5);
+    float b = 730.14;
+    float distance = (cm - b) / a;  
 
     return distance;
 
