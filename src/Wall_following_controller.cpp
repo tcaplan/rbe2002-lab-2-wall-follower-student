@@ -12,9 +12,14 @@ void WallFollowingController::Init(void)
     HCSR04.Init();
 }
 
+
 float WallFollowingController::Process(float target_distance)
 {
   //assignment 2: write a PD controller that outputs speed as a function of distance error
-  float speed = 0;
+  E_distance = target_distance - (2.8876 / ((SharpIR.ReadData() / 4095.0 * 5.0) - 0.2128)); 
+  float de = E_distance - prev_e_distance; 
+  float speed = Kp*E_distance + Kd*de;
+  Serial.println(E_distance);
+  prev_e_distance = E_distance; 
   return speed;
 }

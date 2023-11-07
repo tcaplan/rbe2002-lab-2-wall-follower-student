@@ -9,8 +9,10 @@ class SonarSensor{
         const int pin_ECHO = 1;
     public:
         void Init(void); 
-        float ReadData(void); 
+        unsigned long ReadData(void); 
         float PrintData(void);
+        //static void isrHigh(void); 
+        //static void isrLow(void);   
 };
 
 #endif
