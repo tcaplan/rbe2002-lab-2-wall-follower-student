@@ -4,9 +4,12 @@
 #include "IR_sensor.h"
 #include "Sonar_sensor.h"
 
+#define SIZE 19
+#define ANGLE 60
+
 IRsensor SharpIR;
 SonarSensor HCSR04;
-float speeds[5];
+float speeds[SIZE];
 int index = 0;
 bool filled = false;
 
@@ -22,21 +25,26 @@ void WallFollowingController::Init(void)
 float WallFollowingController::Process(float target_distance)
 {
   //assignment 2: write a PD controller that outputs speed as a function of distance error
-  E_distance = target_distance - (SharpIR.ReadData() * cos(50));
+  float angle = 0.7;// rad //cos(ANGLE * M_1_PI / 180.0);
+  float reading = (SharpIR.ReadData() * angle) - 4;
+  E_distance = target_distance - reading;
   float de = E_distance - prev_e_distance;
   float speed = Kp * E_distance + Kd * de;
-  Serial.print(E_distance);
-  Serial.print("\t");
-  Serial.println(de);
+  // Serial.print("\tD ");
+  // Serial.print(reading);
+  // Serial.print("\t");
+  // Serial.print(E_distance);
+  // Serial.print("\t");
+  // Serial.print(de); 
   prev_e_distance = E_distance;
   if(!filled) {
     index = 0;
-    for(int i = 0; i < 5; i++) {
+    for(int i = 0; i < SIZE; i++) {
       speeds[i] = speed;
     }
   } else {
     index++;
-    if(index >= 5) index = 0;
+    if(index >= SIZE) index = 0;
   }
 
   speeds[index] = speed;
@@ -44,10 +52,20 @@ float WallFollowingController::Process(float target_distance)
   sort(speeds, index);
 
   index++;
-  if(index >= 5) index = 0;
+  if(index >= SIZE) index = 0;
   
 
-  return speeds[2];
+
+  Serial.print(" [");
+  for(int i = 0; i < SIZE; i++) {
+    Serial.print(speeds[i]);
+    if(i != SIZE - 1) {
+      Serial.print(", ");
+    }
+  }
+  Serial.print(" ]\t");
+  Serial.print(speeds[SIZE/2]);
+  return speeds[SIZE/2];
 }
 
 

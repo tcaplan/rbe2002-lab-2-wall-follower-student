@@ -37,6 +37,7 @@ void loop() {
       //is capable of following a wall autonomously.
       int speed = PDcontroller.Process(30); //distance in [cm]
       PIcontroller.Process(50+speed,50-speed); //speed in [[mm/s]]
+      Serial.println();
       if(buttonA.getSingleDebouncedRelease()) 
       {
         PIcontroller.Stop();

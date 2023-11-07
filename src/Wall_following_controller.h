@@ -5,7 +5,7 @@
 
 class WallFollowingController{
     private:
-        const float Kp = 6; //Adapt parameters Kp and Kd until your robot consistently drives along a wall
+        const float Kp = 3; //Adapt parameters Kp and Kd until your robot consistently drives along a wall
         const float Kd = 1;
         float E_left = 0;
         float E_right = 0;
